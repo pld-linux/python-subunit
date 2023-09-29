@@ -1,12 +1,13 @@
 #
 # Conditional build:
 %bcond_without	python2 # CPython 2.x module and tools
-%bcond_without	python3 # CPython 3.x module and tools
+%bcond_with	python3 # CPython 3.x module and tools (built from python3-subunit.spec)
 %bcond_without	tests	# unit tests
 
 Summary:	subunit - streaming protocol for test results
 Summary(pl.UTF-8):	subunit - protokół strumieniowy do wyników testów
 Name:		python-subunit
+# keep 1.4.0 here for python2 support
 Version:	1.4.0
 Release:	4
 License:	Apache v2.0 or BSD
@@ -99,11 +100,7 @@ subunit.
 Summary:	Python tools for subunit streaming protocol for test results
 Summary(pl.UTF-8):	Pythonowe narzędzia dla protokołu strumieniowego do wyników testów subunit
 Group:		Development/Tools
-%if %{with python3}
 Requires:	subunit-python3 = %{version}-%{release}
-%else
-Requires:	subunit-python2 = %{version}-%{release}
-%endif
 
 %description -n subunit-python
 Python tools for subunit streaming protocol for test results.
@@ -146,9 +143,6 @@ rm -rf $RPM_BUILD_ROOT
 
 for f in $RPM_BUILD_ROOT%{_bindir}/* ; do
 	%{__mv} "$f" "${f}-2"
-%if %{without python3}
-	ln -sf $(basename $f)-2 "$f"
-%endif
 done
 %endif
 
@@ -216,7 +210,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/subunit2junitxml-3
 %attr(755,root,root) %{_bindir}/subunit2pyunit-3
 %attr(755,root,root) %{_bindir}/tap2subunit-3
-%endif
 
 %files -n subunit-python
 %defattr(644,root,root,755)
@@ -234,3 +227,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/subunit2junitxml
 %attr(755,root,root) %{_bindir}/subunit2pyunit
 %attr(755,root,root) %{_bindir}/tap2subunit
+%endif
